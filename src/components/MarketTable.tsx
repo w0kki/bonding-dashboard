@@ -59,21 +59,22 @@ export default function MarketTable({ markets, sortField, sortDir, onSort }: Mar
           {markets.map((m, i) => {
             const pctStr = (m.probability * 100).toFixed(2) + '%';
             const url = m.eventSlug ? `https://polymarket.com/event/${m.eventSlug}` : '#';
+            const openMarket = () => {
+              fetch(`http://localhost:3333/open?url=${encodeURIComponent(url)}`)
+                .catch(() => window.open(url, '_blank'));
+            };
             return (
               <tr
                 key={m.slug + i}
-                onClick={() => window.open(url, '_blank')}
+                onClick={openMarket}
                 className={`even:bg-gray-900/50 hover:bg-gray-800/50 transition-colors cursor-pointer ${probabilityBorderLeft(m.probability)}`}
               >
                 <td className="px-4 py-3 min-w-[280px] max-w-md">
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-gray-200 hover:text-blue-400 hover:underline decoration-blue-400/40 underline-offset-2 line-clamp-2"
+                  <span
+                    className="text-sm text-gray-200 hover:text-blue-400 hover:underline decoration-blue-400/40 underline-offset-2 line-clamp-2 cursor-pointer"
                   >
                     {m.question}
-                  </a>
+                  </span>
                 </td>
                 <td className="px-4 py-3">
                   <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-300 border border-gray-700">

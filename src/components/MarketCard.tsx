@@ -9,12 +9,15 @@ export default function MarketCard({ market }: MarketCardProps) {
   const pctStr = (market.probability * 100).toFixed(2) + '%';
   const url = market.eventSlug ? `https://polymarket.com/event/${market.eventSlug}` : '#';
 
+  const openMarket = () => {
+    fetch(`http://localhost:3333/open?url=${encodeURIComponent(url)}`)
+      .catch(() => window.open(url, '_blank'));
+  };
+
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`block border rounded-lg p-4 transition-all duration-200 hover:border-gray-600 hover:scale-[1.02] hover:shadow-lg hover:shadow-black/20 ${probabilityBg(market.probability)} ${probabilityBorderTop(market.probability)}`}
+    <div
+      onClick={openMarket}
+      className={`block border rounded-lg p-4 transition-all duration-200 hover:border-gray-600 hover:scale-[1.02] hover:shadow-lg hover:shadow-black/20 cursor-pointer ${probabilityBg(market.probability)} ${probabilityBorderTop(market.probability)}`}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <h3 className="text-sm font-medium text-gray-100 leading-snug line-clamp-2">
@@ -45,6 +48,6 @@ export default function MarketCard({ market }: MarketCardProps) {
           <div className={spreadColor(market.spread)}>{market.spread != null ? `${(market.spread * 100).toFixed(1)}¢` : '—'}</div>
         </div>
       </div>
-    </a>
+    </div>
   );
 }
