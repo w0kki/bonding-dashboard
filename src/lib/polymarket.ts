@@ -131,7 +131,9 @@ async function fetchEventsInHorizon(
   let page = 1;
 
   const now = new Date();
-  const endDateMin = now.toISOString();
+  // Look back 3 hours so live games running past their scheduled end time are still captured.
+  // The local timeRemaining check below handles true expiry filtering.
+  const endDateMin = new Date(now.getTime() - 3 * 60 * 60 * 1000).toISOString();
   const endDateMax = new Date(now.getTime() + horizonHours * 60 * 60 * 1000).toISOString();
 
   while (true) {
