@@ -9,17 +9,29 @@ import YfmLogo from './components/YfmLogo';
 
 const REFRESH_INTERVAL = 30_000;
 
+function load<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw !== null ? (JSON.parse(raw) as T) : fallback;
+  } catch { return fallback; }
+}
+function save<T>(key: string, value: T) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+}
+
 export default function App() {
-  const [threshold, setThreshold] = useState(95);
-  const [horizon, setHorizon] = useState<TimeHorizon>(48);
-  const [sortField, setSortField] = useState<SortField>('probability');
-  const [sortDir, setSortDir] = useState<SortDirection>('desc');
-  const [sortField2, setSortField2] = useState<SortField | 'none'>('none');
-  const [sortDir2, setSortDir2] = useState<SortDirection>('asc');
-  const [viewMode, setViewMode] = useState<ViewMode>('table');
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [includeLive, setIncludeLive] = useState(false);
-  const [excludedTags, setExcludedTags] = useState<Set<string>>(new Set());
+  const [threshold, setThreshold] = useState<number>(() => load('threshold', 95));
+  const [horizon, setHorizon] = useState<TimeHorizon>(() => load('horizon', 48));
+  const [sortField, setSortField] = useState<SortField>(() => load('sortField', 'probability'));
+  const [sortDir, setSortDir] = useState<SortDirection>(() => load('sortDir', 'desc'));
+  const [sortField2, setSortField2] = useState<SortField | 'none'>(() => load('sortField2', 'none'));
+  const [sortDir2, setSortDir2] = useState<SortDirection>(() => load('sortDir2', 'asc'));
+  const [viewMode, setViewMode] = useState<ViewMode>(() => load('viewMode', 'table'));
+  const [autoRefresh, setAutoRefresh] = useState<boolean>(() => load('autoRefresh', true));
+  const [includeLive, setIncludeLive] = useState<boolean>(() => load('includeLive', false));
+  const [excludedTags, setExcludedTags] = useState<Set<string>>(
+    () => new Set<string>(load<string[]>('excludedTags', []))
+  );
   const [search, setSearch] = useState('');
 
   const [markets, setMarkets] = useState<BondingMarket[]>([]);
@@ -28,6 +40,18 @@ export default function App() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [progress, setProgress] = useState<FetchProgress | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Persist settings to localStorage whenever they change
+  useEffect(() => save('threshold', threshold), [threshold]);
+  useEffect(() => save('horizon', horizon), [horizon]);
+  useEffect(() => save('sortField', sortField), [sortField]);
+  useEffect(() => save('sortDir', sortDir), [sortDir]);
+  useEffect(() => save('sortField2', sortField2), [sortField2]);
+  useEffect(() => save('sortDir2', sortDir2), [sortDir2]);
+  useEffect(() => save('viewMode', viewMode), [viewMode]);
+  useEffect(() => save('autoRefresh', autoRefresh), [autoRefresh]);
+  useEffect(() => save('includeLive', includeLive), [includeLive]);
+  useEffect(() => save('excludedTags', [...excludedTags]), [excludedTags]);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
