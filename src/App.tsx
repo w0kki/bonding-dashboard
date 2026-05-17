@@ -100,7 +100,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 py-5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold flex items-center gap-2.5">
               <YfmLogo />
@@ -119,7 +119,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+      <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
         <SearchBar value={search} onChange={setSearch} />
 
         <FilterBar

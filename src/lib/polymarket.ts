@@ -174,7 +174,7 @@ export async function fetchBondingMarkets(
   // Phase 1: Gamma pre-filter (cheap, no extra API calls).
   // Filters on threshold, time horizon, volume, and orderbook availability.
   // Does NOT check actual order book liquidity — that's Phase 2 below.
-  const candidates: { dominantTokenId: string; market: BondingMarket }[] = [];
+  const candidates: { dominantTokenId: string; market: BondingMarket; isLive: boolean }[] = [];
 
   for (const event of events) {
     if (!event.markets) continue;
@@ -182,7 +182,8 @@ export async function fetchBondingMarkets(
     for (const m of event.markets) {
       if (!m.question || !m.endDateIso || !m.outcomes || !m.outcomePrices) continue;
       if (!m.enableOrderBook) continue;
-      if (!includeLive && m.acceptingOrders === false) continue;
+      const isLive = m.acceptingOrders === false;
+      if (!includeLive && isLive) continue;
 
       // endDateIso can be date-only ("2026-03-21") which parses as midnight UTC.
       // Treat date-only as end-of-day so markets don't disappear prematurely.
@@ -224,6 +225,7 @@ export async function fetchBondingMarkets(
 
       candidates.push({
         dominantTokenId,
+        isLive,
         market: {
           question: m.question,
           slug: m.slug ?? '',
@@ -246,13 +248,14 @@ export async function fetchBondingMarkets(
   // The Gamma pre-filter above is cheap but can't detect one-sided books.
   // We batch all dominant token IDs into one POST /books call and drop any
   // market where the dominant token has no asks (i.e. untradeable).
-  const allDominantTokens = candidates.map((c) => c.dominantTokenId);
+  const nonLiveCandidates = candidates.filter((c) => !c.isLive);
+  const allDominantTokens = nonLiveCandidates.map((c) => c.dominantTokenId);
   const tokensWithAsks = allDominantTokens.length > 0
     ? await getTokensWithAsks(allDominantTokens)
     : new Set<string>();
 
   const results: BondingMarket[] = candidates
-    .filter((c) => tokensWithAsks.has(c.dominantTokenId))
+    .filter((c) => c.isLive || tokensWithAsks.has(c.dominantTokenId))
     .map((c) => c.market);
 
   results.sort((a, b) => b.probability - a.probability);
