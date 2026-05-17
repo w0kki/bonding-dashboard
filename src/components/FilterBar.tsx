@@ -14,6 +14,8 @@ interface FilterBarProps {
   onViewModeChange: (v: ViewMode) => void;
   autoRefresh: boolean;
   onAutoRefreshChange: (v: boolean) => void;
+  includeLive: boolean;
+  onIncludeLiveChange: (v: boolean) => void;
   allTags: string[];
   excludedTags: Set<string>;
   onExcludedTagsChange: (v: Set<string>) => void;
@@ -34,6 +36,7 @@ export default function FilterBar({
   sortDir, onSortDirChange,
   viewMode, onViewModeChange,
   autoRefresh, onAutoRefreshChange,
+  includeLive, onIncludeLiveChange,
   allTags, excludedTags, onExcludedTagsChange,
   marketCount,
 }: FilterBarProps) {
@@ -224,6 +227,23 @@ export default function FilterBar({
             }`}
           >
             {autoRefresh ? <><span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-1.5" />On (30s)</> : 'Off'}
+          </button>
+        </div>
+
+        <div className="hidden sm:block w-px h-8 bg-gray-700" />
+
+        {/* Include live */}
+        <div className="space-y-2">
+          <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Include Live</label>
+          <button
+            onClick={() => onIncludeLiveChange(!includeLive)}
+            className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+              includeLive
+                ? 'bg-orange-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            {includeLive ? <><span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse mr-1.5" />On</> : 'Off'}
           </button>
         </div>
 

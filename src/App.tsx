@@ -16,6 +16,7 @@ export default function App() {
   const [sortDir, setSortDir] = useState<SortDirection>('desc');
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [includeLive, setIncludeLive] = useState(false);
   const [excludedTags, setExcludedTags] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState('');
 
@@ -34,6 +35,7 @@ export default function App() {
         threshold,
         horizon,
         showProgress ? setProgress : undefined,
+        includeLive,
       );
       setMarkets(data);
       setLastUpdated(new Date());
@@ -45,7 +47,7 @@ export default function App() {
       setLoading(false);
       setProgress(null);
     }
-  }, [threshold, horizon]);
+  }, [threshold, horizon, includeLive]);
 
   useEffect(() => {
     setLoading(true);
@@ -133,6 +135,8 @@ export default function App() {
           onViewModeChange={setViewMode}
           autoRefresh={autoRefresh}
           onAutoRefreshChange={setAutoRefresh}
+          includeLive={includeLive}
+          onIncludeLiveChange={setIncludeLive}
           allTags={allTags}
           excludedTags={excludedTags}
           onExcludedTagsChange={setExcludedTags}

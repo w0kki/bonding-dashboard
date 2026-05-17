@@ -166,6 +166,7 @@ export async function fetchBondingMarkets(
   threshold: number,
   horizonHours: number,
   onProgress?: (p: FetchProgress) => void,
+  includeLive: boolean = false,
 ): Promise<BondingMarket[]> {
   const events = await fetchEventsInHorizon(horizonHours, onProgress);
   const now = Date.now();
@@ -181,7 +182,7 @@ export async function fetchBondingMarkets(
     for (const m of event.markets) {
       if (!m.question || !m.endDateIso || !m.outcomes || !m.outcomePrices) continue;
       if (!m.enableOrderBook) continue;
-      if (m.acceptingOrders === false) continue;
+      if (!includeLive && m.acceptingOrders === false) continue;
 
       // endDateIso can be date-only ("2026-03-21") which parses as midnight UTC.
       // Treat date-only as end-of-day so markets don't disappear prematurely.
