@@ -10,6 +10,10 @@ interface FilterBarProps {
   onSortFieldChange: (v: SortField) => void;
   sortDir: SortDirection;
   onSortDirChange: (v: SortDirection) => void;
+  sortField2: SortField | 'none';
+  onSortField2Change: (v: SortField | 'none') => void;
+  sortDir2: SortDirection;
+  onSortDir2Change: (v: SortDirection) => void;
   viewMode: ViewMode;
   onViewModeChange: (v: ViewMode) => void;
   autoRefresh: boolean;
@@ -35,6 +39,8 @@ export default function FilterBar({
   horizon, onHorizonChange,
   sortField, onSortFieldChange,
   sortDir, onSortDirChange,
+  sortField2, onSortField2Change,
+  sortDir2, onSortDir2Change,
   viewMode, onViewModeChange,
   autoRefresh, onAutoRefreshChange, onRefresh,
   includeLive, onIncludeLiveChange,
@@ -166,7 +172,7 @@ export default function FilterBar({
         {/* Sort */}
         <div className="space-y-2">
           <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Sort by</label>
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
             <select
               value={sortField}
               onChange={(e) => onSortFieldChange(e.target.value as SortField)}
@@ -182,6 +188,25 @@ export default function FilterBar({
             >
               {sortDir === 'asc' ? '↑' : '↓'}
             </button>
+            <span className="text-gray-600 text-xs">then</span>
+            <select
+              value={sortField2}
+              onChange={(e) => onSortField2Change(e.target.value as SortField | 'none')}
+              className="bg-gray-800 text-gray-300 text-sm rounded px-2 py-1.5 border border-gray-700"
+            >
+              <option value="none">—</option>
+              <option value="probability">Probability</option>
+              <option value="timeRemaining">Time Left</option>
+              <option value="volume24hr">24h Volume</option>
+            </select>
+            {sortField2 !== 'none' && (
+              <button
+                onClick={() => onSortDir2Change(sortDir2 === 'asc' ? 'desc' : 'asc')}
+                className="bg-gray-800 text-gray-300 text-sm rounded px-2 py-1.5 border border-gray-700 hover:bg-gray-700"
+              >
+                {sortDir2 === 'asc' ? '↑' : '↓'}
+              </button>
+            )}
           </div>
         </div>
 

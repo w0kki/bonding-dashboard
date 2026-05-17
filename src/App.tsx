@@ -14,6 +14,8 @@ export default function App() {
   const [horizon, setHorizon] = useState<TimeHorizon>(48);
   const [sortField, setSortField] = useState<SortField>('probability');
   const [sortDir, setSortDir] = useState<SortDirection>('desc');
+  const [sortField2, setSortField2] = useState<SortField | 'none'>('none');
+  const [sortDir2, setSortDir2] = useState<SortDirection>('asc');
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [includeLive, setIncludeLive] = useState(false);
@@ -85,7 +87,12 @@ export default function App() {
     const aVal = a[sortField];
     const bVal = b[sortField];
     const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-    return sortDir === 'asc' ? cmp : -cmp;
+    const primary = sortDir === 'asc' ? cmp : -cmp;
+    if (primary !== 0 || sortField2 === 'none') return primary;
+    const aVal2 = a[sortField2];
+    const bVal2 = b[sortField2];
+    const cmp2 = aVal2 < bVal2 ? -1 : aVal2 > bVal2 ? 1 : 0;
+    return sortDir2 === 'asc' ? cmp2 : -cmp2;
   });
 
   const handleSort = (field: SortField) => {
@@ -131,6 +138,10 @@ export default function App() {
           onSortFieldChange={setSortField}
           sortDir={sortDir}
           onSortDirChange={setSortDir}
+          sortField2={sortField2}
+          onSortField2Change={setSortField2}
+          sortDir2={sortDir2}
+          onSortDir2Change={setSortDir2}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           autoRefresh={autoRefresh}
