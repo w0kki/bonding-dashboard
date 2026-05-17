@@ -19,12 +19,12 @@ interface FilterBarProps {
   autoRefresh: boolean;
   onAutoRefreshChange: (v: boolean) => void;
   onRefresh: () => void;
+  isRefreshing: boolean;
   includeLive: boolean;
   onIncludeLiveChange: (v: boolean) => void;
   allTags: string[];
   excludedTags: Set<string>;
   onExcludedTagsChange: (v: Set<string>) => void;
-  marketCount: number;
 }
 
 const THRESHOLDS = [90, 95, 99] as const;
@@ -42,10 +42,9 @@ export default function FilterBar({
   sortField2, onSortField2Change,
   sortDir2, onSortDir2Change,
   viewMode, onViewModeChange,
-  autoRefresh, onAutoRefreshChange, onRefresh,
+  autoRefresh, onAutoRefreshChange, onRefresh, isRefreshing,
   includeLive, onIncludeLiveChange,
   allTags, excludedTags, onExcludedTagsChange,
-  marketCount,
 }: FilterBarProps) {
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const tagRef = useRef<HTMLDivElement>(null);
@@ -257,10 +256,12 @@ export default function FilterBar({
             </button>
             <button
               onClick={onRefresh}
+              disabled={isRefreshing}
               title="Refresh now"
-              className="px-2.5 py-1.5 text-sm rounded font-medium transition-colors bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white"
+              className="px-2.5 py-1.5 text-sm rounded font-medium transition-colors bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white disabled:opacity-50"
+              style={{ display: 'inline-block' }}
             >
-              ↻
+              <span style={{ display: 'inline-block', animation: isRefreshing ? 'spin 0.8s linear infinite' : 'none' }}>↻</span>
             </button>
           </div>
         </div>
@@ -282,12 +283,6 @@ export default function FilterBar({
           </button>
         </div>
 
-        {/* Market count */}
-        <div className="ml-auto">
-          <span className="text-sm px-3 py-1 rounded-full bg-gray-800 border border-gray-700 text-gray-300 cursor-help" title="Markets matching your current threshold, time horizon, and tag filters">
-            <span className="text-white font-medium">{marketCount}</span> markets
-          </span>
-        </div>
       </div>
     </div>
   );

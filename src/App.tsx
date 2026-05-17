@@ -27,6 +27,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [progress, setProgress] = useState<FetchProgress | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -95,6 +96,12 @@ export default function App() {
     return sortDir2 === 'asc' ? cmp2 : -cmp2;
   });
 
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await loadMarkets(true);
+    setIsRefreshing(false);
+  }, [loadMarkets]);
+
   const handleSort = (field: SortField) => {
     if (field === sortField) {
       setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -114,15 +121,20 @@ export default function App() {
               <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Bonding Dashboard</span>
             </h1>
           </div>
-          {lastUpdated && (
-            <span
-              key={lastUpdated.getTime()}
-              className="text-xs text-gray-500 cursor-help animate-flash-update px-3 py-1 rounded-full bg-gray-800/50 border border-gray-800"
-              title="Last time market data was refreshed from Polymarket"
-            >
-              Updated {lastUpdated.toLocaleTimeString()}
+          <div className="flex items-center gap-3">
+            <span className="text-sm px-3 py-1 rounded-full bg-gray-800 border border-gray-700 text-gray-300">
+              <span className="text-white font-medium">{sorted.length}</span> markets
             </span>
-          )}
+            {lastUpdated && (
+              <span
+                key={lastUpdated.getTime()}
+                className="text-xs text-gray-500 cursor-help animate-flash-update px-3 py-1 rounded-full bg-gray-800/50 border border-gray-800"
+                title="Last time market data was refreshed from Polymarket"
+              >
+                Updated {lastUpdated.toLocaleTimeString()}
+              </span>
+            )}
+          </div>
         </div>
       </header>
 
@@ -146,13 +158,13 @@ export default function App() {
           onViewModeChange={setViewMode}
           autoRefresh={autoRefresh}
           onAutoRefreshChange={setAutoRefresh}
-          onRefresh={loadMarkets}
+          onRefresh={handleRefresh}
+          isRefreshing={isRefreshing}
           includeLive={includeLive}
           onIncludeLiveChange={setIncludeLive}
           allTags={allTags}
           excludedTags={excludedTags}
           onExcludedTagsChange={setExcludedTags}
-          marketCount={sorted.length}
         />
 
         {loading && markets.length === 0 ? (
