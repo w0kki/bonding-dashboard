@@ -14,6 +14,7 @@ interface FilterBarProps {
   onViewModeChange: (v: ViewMode) => void;
   autoRefresh: boolean;
   onAutoRefreshChange: (v: boolean) => void;
+  onRefresh: () => void;
   includeLive: boolean;
   onIncludeLiveChange: (v: boolean) => void;
   allTags: string[];
@@ -35,7 +36,7 @@ export default function FilterBar({
   sortField, onSortFieldChange,
   sortDir, onSortDirChange,
   viewMode, onViewModeChange,
-  autoRefresh, onAutoRefreshChange,
+  autoRefresh, onAutoRefreshChange, onRefresh,
   includeLive, onIncludeLiveChange,
   allTags, excludedTags, onExcludedTagsChange,
   marketCount,
@@ -218,16 +219,25 @@ export default function FilterBar({
         {/* Auto-refresh */}
         <div className="space-y-2">
           <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Auto-refresh</label>
-          <button
-            onClick={() => onAutoRefreshChange(!autoRefresh)}
-            className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
-              autoRefresh
-                ? 'bg-green-600 text-white'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-            }`}
-          >
-            {autoRefresh ? <><span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-1.5" />On (30s)</> : 'Off'}
-          </button>
+          <div className="flex gap-1">
+            <button
+              onClick={() => onAutoRefreshChange(!autoRefresh)}
+              className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+                autoRefresh
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+              }`}
+            >
+              {autoRefresh ? <><span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-1.5" />On (30s)</> : 'Off'}
+            </button>
+            <button
+              onClick={onRefresh}
+              title="Refresh now"
+              className="px-2.5 py-1.5 text-sm rounded font-medium transition-colors bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              ↻
+            </button>
+          </div>
         </div>
 
         <div className="hidden sm:block w-px h-8 bg-gray-700" />

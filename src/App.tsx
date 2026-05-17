@@ -135,6 +135,7 @@ export default function App() {
           onViewModeChange={setViewMode}
           autoRefresh={autoRefresh}
           onAutoRefreshChange={setAutoRefresh}
+          onRefresh={loadMarkets}
           includeLive={includeLive}
           onIncludeLiveChange={setIncludeLive}
           allTags={allTags}
