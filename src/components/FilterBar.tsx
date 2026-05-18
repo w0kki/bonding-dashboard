@@ -66,11 +66,11 @@ export default function FilterBar({
     onExcludedTagsChange(next);
   };
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 space-y-4">
-      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+    <div className="bg-gray-900 border border-gray-800 rounded-lg px-4 py-3">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         {/* Threshold presets */}
-        <div className="space-y-2">
-          <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Threshold</label>
+        <div className="space-y-1">
+          <label className="block text-xs text-gray-500 uppercase tracking-wide text-center">Threshold</label>
           <div className="flex gap-1 items-center">
             <input
               type="number"
@@ -88,7 +88,7 @@ export default function FilterBar({
               <button
                 key={t}
                 onClick={() => onThresholdChange(t)}
-                className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+                className={`px-2.5 py-1 text-sm rounded font-medium transition-colors ${
                   threshold === t
                     ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
                     : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -100,17 +100,17 @@ export default function FilterBar({
           </div>
         </div>
 
-        <div className="hidden sm:block w-px h-8 bg-gray-700" />
+        <div className="hidden sm:block w-px h-6 bg-gray-700" />
 
         {/* Time horizon */}
-        <div className="space-y-2">
-          <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Closing within</label>
+        <div className="space-y-1">
+          <label className="block text-xs text-gray-500 uppercase tracking-wide text-center">Closing within</label>
           <div className="flex gap-1">
             {HORIZONS.map((h) => (
               <button
                 key={h.value}
                 onClick={() => onHorizonChange(h.value)}
-                className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+                className={`px-2.5 py-1 text-sm rounded font-medium transition-colors ${
                   horizon === h.value
                     ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
                     : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -122,12 +122,12 @@ export default function FilterBar({
           </div>
         </div>
 
-        <div className="hidden sm:block w-px h-8 bg-gray-700" />
+        <div className="hidden sm:block w-px h-6 bg-gray-700" />
 
         {/* Tags */}
         {allTags.length > 0 && (
           <div className="space-y-2" ref={tagRef}>
-            <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">
+            <label className="block text-xs text-gray-500 uppercase tracking-wide text-center">
               Tags{excludedTags.size > 0 && ` (${allTags.length - excludedTags.size}/${allTags.length})`}
             </label>
             <div className="relative">
@@ -178,11 +178,11 @@ export default function FilterBar({
           </div>
         )}
 
-        <div className="hidden sm:block w-px h-8 bg-gray-700" />
+        <div className="hidden sm:block w-px h-6 bg-gray-700" />
 
         {/* Sort */}
-        <div className="space-y-2">
-          <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Sort by</label>
+        <div className="space-y-1">
+          <label className="block text-xs text-gray-500 uppercase tracking-wide text-center">Sort by</label>
           <div className="flex gap-1 items-center">
             <select
               value={sortField}
@@ -221,15 +221,15 @@ export default function FilterBar({
           </div>
         </div>
 
-        <div className="hidden sm:block w-px h-8 bg-gray-700" />
+        <div className="hidden sm:block w-px h-6 bg-gray-700" />
 
         {/* View mode */}
-        <div className="space-y-2">
-          <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">View</label>
+        <div className="space-y-1">
+          <label className="block text-xs text-gray-500 uppercase tracking-wide text-center">View</label>
           <div className="flex gap-1">
             <button
               onClick={() => onViewModeChange('table')}
-              className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+              className={`px-2.5 py-1 text-sm rounded font-medium transition-colors ${
                 viewMode === 'table'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -239,7 +239,7 @@ export default function FilterBar({
             </button>
             <button
               onClick={() => onViewModeChange('card')}
-              className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+              className={`px-2.5 py-1 text-sm rounded font-medium transition-colors ${
                 viewMode === 'card'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -250,15 +250,15 @@ export default function FilterBar({
           </div>
         </div>
 
-        <div className="hidden sm:block w-px h-8 bg-gray-700" />
+        <div className="hidden sm:block w-px h-6 bg-gray-700" />
 
         {/* Auto-refresh */}
-        <div className="space-y-2">
-          <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Auto-refresh</label>
+        <div className="space-y-1">
+          <label className="block text-xs text-gray-500 uppercase tracking-wide text-center">Auto-refresh</label>
           <div className="flex gap-1">
             <button
               onClick={() => onAutoRefreshChange(!autoRefresh)}
-              className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+              className={`px-2.5 py-1 text-sm rounded font-medium transition-colors ${
                 autoRefresh
                   ? 'bg-green-600 text-white'
                   : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -278,14 +278,14 @@ export default function FilterBar({
           </div>
         </div>
 
-        <div className="hidden sm:block w-px h-8 bg-gray-700" />
+        <div className="hidden sm:block w-px h-6 bg-gray-700" />
 
         {/* Include live */}
-        <div className="space-y-2">
-          <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Include Live</label>
+        <div className="space-y-1">
+          <label className="block text-xs text-gray-500 uppercase tracking-wide text-center">Include Live</label>
           <button
             onClick={() => onIncludeLiveChange(!includeLive)}
-            className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${
+            className={`px-2.5 py-1 text-sm rounded font-medium transition-colors ${
               includeLive
                 ? 'bg-orange-600 text-white'
                 : 'bg-gray-800 text-gray-300 hover:bg-gray-700'

@@ -189,15 +189,13 @@ export async function fetchBondingMarkets(
 
       // endDateIso can be date-only ("2026-03-21") which parses as midnight UTC.
       // Treat date-only as end-of-day so markets don't disappear prematurely.
-      // Date-only values (e.g. "2026-05-17") are treated as end-of-day LOCAL time.
-      // Using "T23:59:59" (no Z) makes JS parse it in the local timezone, so users
-      // in UTC-6 get until 11:59 PM their time rather than 11:59 PM UTC.
-      const endIso = m.endDateIso.includes('T') ? m.endDateIso : `${m.endDateIso}T23:59:59`;
+      const endIso = m.endDateIso.includes('T') ? m.endDateIso : `${m.endDateIso}T23:59:59Z`;
       const endTime = new Date(endIso).getTime();
       if (isNaN(endTime)) continue;
 
       const timeRemaining = endTime - now;
-      if (timeRemaining <= 0 || timeRemaining > horizonMs) continue;
+      const minTime = includeLive ? -3 * 60 * 60 * 1000 : 0;
+      if (timeRemaining < minTime || timeRemaining > horizonMs) continue;
 
       const outcomes = parseJsonString<string[]>(m.outcomes);
       const prices = parseJsonString<string[]>(m.outcomePrices);
