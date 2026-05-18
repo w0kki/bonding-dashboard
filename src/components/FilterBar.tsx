@@ -71,7 +71,19 @@ export default function FilterBar({
         {/* Threshold presets */}
         <div className="space-y-2">
           <label className="block text-xs text-gray-400 uppercase tracking-wide text-center">Threshold</label>
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
+            <input
+              type="number"
+              min={1}
+              max={99}
+              value={!THRESHOLDS.includes(threshold as typeof THRESHOLDS[number]) ? threshold : ''}
+              onChange={(e) => {
+                const v = Math.min(99, Math.max(1, parseInt(e.target.value) || 1));
+                onThresholdChange(v);
+              }}
+              placeholder="Any%"
+              className="w-16 px-2 py-1.5 text-sm rounded font-medium bg-gray-800 text-gray-300 border border-gray-700 focus:outline-none focus:border-blue-500 focus:text-white placeholder-gray-600"
+            />
             {THRESHOLDS.map((t) => (
               <button
                 key={t}
