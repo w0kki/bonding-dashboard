@@ -94,10 +94,20 @@ export default function App() {
   const TAG_BUCKETS = ['Crypto', 'Politics', 'Sports'] as const;
   const allTags = [...TAG_BUCKETS, 'Other'];
 
+  // Polymarket sports events use many subtags instead of a generic "Sports" tag.
+  // We map all of them into the Sports bucket so the tag filter works correctly.
+  const SPORTS_SUBTAGS = new Set([
+    'soccer', 'football', 'nfl', 'nba', 'nhl', 'mlb', 'basketball', 'baseball',
+    'hockey', 'tennis', 'golf', 'boxing', 'mma', 'ufc', 'f1', 'racing', 'nascar',
+    'rugby', 'cricket', 'esports', 'games', 'olympics', 'ncaa', 'college football',
+    'college basketball', 'wnba', 'pga',
+  ]);
+
   const bucketFor = (tags: string[]): string => {
-    for (const b of TAG_BUCKETS) {
-      if (tags.some((t) => t.toLowerCase() === b.toLowerCase())) return b;
-    }
+    const lower = tags.map((t) => t.toLowerCase());
+    if (lower.some((t) => t === 'crypto')) return 'Crypto';
+    if (lower.some((t) => t === 'politics')) return 'Politics';
+    if (lower.some((t) => t === 'sports' || SPORTS_SUBTAGS.has(t))) return 'Sports';
     return 'Other';
   };
 
