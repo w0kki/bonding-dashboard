@@ -85,10 +85,9 @@ interface ClobBook {
  * POST /books silently omits tokens with no book from the response array,
  * so absence from the response = no book = not tradeable.
  */
-async function getTokensWithAsks(tokenIds: string[]): Promise<Set<string>> {
+async function getTokensWithAsks(tokenIds: string[]): Promise<{ asks: Set<string>; clobAvailable: boolean }> {
   const hasAsks = new Set<string>();
   let successCount = 0;
-  // Process in batches
   for (let i = 0; i < tokenIds.length; i += CLOB_BATCH_SIZE) {
     const batch = tokenIds.slice(i, i + CLOB_BATCH_SIZE);
     const body = batch.map((token_id) => ({ token_id }));
@@ -107,13 +106,12 @@ async function getTokensWithAsks(tokenIds: string[]): Promise<Set<string>> {
         }
       }
     } catch {
-      // Network error — skip this batch, count as failed
+      // Network error — skip this batch
     }
   }
-  if (successCount === 0) {
-    throw new Error('CLOB order book verification failed — unable to confirm market liquidity');
-  }
-  return hasAsks;
+  // If CLOB is unavailable (e.g. 403 from Pi IP), return all tokens as valid
+  // rather than showing nothing. User can verify liquidity on Polymarket.
+  return { asks: hasAsks, clobAvailable: successCount > 0 };
 }
 
 export type FetchProgress = {
@@ -253,12 +251,16 @@ export async function fetchBondingMarkets(
   // market where the dominant token has no asks (i.e. untradeable).
   const nonLiveCandidates = candidates.filter((c) => !c.isLive);
   const allDominantTokens = nonLiveCandidates.map((c) => c.dominantTokenId);
-  const tokensWithAsks = allDominantTokens.length > 0
-    ? await getTokensWithAsks(allDominantTokens)
-    : new Set<string>();
+  let clobAvailable = true;
+  let tokensWithAsks = new Set<string>();
+  if (allDominantTokens.length > 0) {
+    const result = await getTokensWithAsks(allDominantTokens);
+    tokensWithAsks = result.asks;
+    clobAvailable = result.clobAvailable;
+  }
 
   const results: BondingMarket[] = candidates
-    .filter((c) => c.isLive || tokensWithAsks.has(c.dominantTokenId))
+    .filter((c) => c.isLive || !clobAvailable || tokensWithAsks.has(c.dominantTokenId))
     .map((c) => c.market);
 
   results.sort((a, b) => b.probability - a.probability);
